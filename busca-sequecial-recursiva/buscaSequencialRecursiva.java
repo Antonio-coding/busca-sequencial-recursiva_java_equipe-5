@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-
 public class buscaSequencialRecursiva {
 
     public static class Funcionario {
@@ -12,7 +11,6 @@ public class buscaSequencialRecursiva {
         public String nome;
         public double salario;
 
-        // Construtor para facilitar a criação de objetos Funcionario
         public Funcionario(String matricula, String nome, double salario) {
             this.matricula = matricula;
             this.nome = nome;
@@ -24,7 +22,6 @@ public class buscaSequencialRecursiva {
 
         private static List<Funcionario> funcionarios = new ArrayList<>();
 
-        // Método para carregar dados dos funcionários a partir de um arquivo
         public static void carregarDados(String caminhoArquivo) {
             try {
                 File arquivo = new File(caminhoArquivo);
@@ -34,11 +31,20 @@ public class buscaSequencialRecursiva {
                     String linha = scanner.nextLine();
                     String[] partes = linha.split(" ");
 
-                    // Criar um novo objeto Funcionario e adicioná-lo à lista
+                    double salario = Double.parseDouble(partes[partes.length - 1]);
+
+                    StringBuilder nomeBuilder = new StringBuilder();
+                    for (int i = 2; i < partes.length - 1; i++) {
+                        nomeBuilder.append(partes[i]);
+                        if (i < partes.length - 2) {
+                            nomeBuilder.append("-");
+                        }
+                    }
+
                     Funcionario funcionario = new Funcionario(
                             partes[0],
-                            partes[2],
-                            Double.parseDouble(partes[3])
+                            nomeBuilder.toString(),
+                            salario
                     );
                     funcionarios.add(funcionario);
                 }
@@ -49,47 +55,38 @@ public class buscaSequencialRecursiva {
             }
         }
 
-        // Método de busca sequencial recursiva por número de matrícula
-        public static Funcionario buscarPorMatricula(List<Funcionario> funcionarios, String matricula, int indice) {
+        public static Funcionario buscarPorMatricula(String matricula) {
+            return buscarPorMatricula(matricula, 0);
+        }
+
+        private static Funcionario buscarPorMatricula(String matricula, int indice) {
             if (indice >= funcionarios.size()) {
                 return null; // Funcionário não encontrado
             }
-        
+
             Funcionario funcionarioAtual = funcionarios.get(indice);
-        
+
             if (funcionarioAtual.matricula.equals(matricula)) {
                 return funcionarioAtual; // Funcionário encontrado
             } else {
-                // Chamar recursivamente para o próximo índice
-                return buscarPorMatricula(funcionarios, matricula, indice + 1);
+                return buscarPorMatricula(matricula, indice + 1);
             }
         }
-        
 
-        // Método principal
         public static void main(String[] args) {
-            // Carregar dados dos funcionários a partir do arquivo
             carregarDados("busca-sequecial-recursiva/dados_funcionarios.txt");
 
-            // Exemplo de uso da busca sequencial recursiva
-            String matriculaBuscada = "113";
-            Funcionario funcionarioEncontrado = buscarPorMatricula(
-                    funcionarios,
-                    matriculaBuscada,
-                    0,
-                    funcionarios.size() - 1
-            );
+            String matriculaBuscada = "89";
+            Funcionario funcionarioEncontrado = buscarPorMatricula(matriculaBuscada);
 
             if (funcionarioEncontrado != null) {
                 System.out.println("Funcionário encontrado: " + funcionarioEncontrado.nome);
+                System.out.println("Funcionário encontrado: " + funcionarioEncontrado.matricula);
+                
+               
             } else {
                 System.out.println("Funcionário não encontrado.");
             }
-        }
-
-        private static buscaSequencialRecursiva.Funcionario buscarPorMatricula(
-                List<buscaSequencialRecursiva.Funcionario> funcionarios2, String matriculaBuscada, int i, int j) {
-            return null;
         }
     }
 }
