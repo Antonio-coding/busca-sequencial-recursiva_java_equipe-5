@@ -95,7 +95,7 @@ public class BuscaSequencialRecursiva {
     }
 
     // Exemplo de uso da busca sequencial recursiva
-    int matriculaBuscada = 280; // Alterado para um número inteiro
+    int matriculaBuscada = 25; // Alterado para um número inteiro
     Funcionario funcionarioEncontrado = buscarPorMatricula(
       funcionarios,
       matriculaBuscada,
@@ -103,14 +103,8 @@ public class BuscaSequencialRecursiva {
     );
 
     if (funcionarioEncontrado != null) {
-      System.out.println(
-        "Funcionário encontrado: " +
-        funcionarioEncontrado.matricula +
-        " Matricula"
-      );
-      System.out.println(
-        "Cargo: " + funcionarioEncontrado.cargo + " Numero do cargo"
-      );
+      System.out.println("Funcionário encontrado: " + funcionarioEncontrado.matricula + " Matricula");
+      System.out.println("Cargo: " + funcionarioEncontrado.cargo + " Numero do cargo");
       System.out.println("Nome: " + funcionarioEncontrado.nome);
       System.out.println("Salário: " + funcionarioEncontrado.salario + " R$");
     } else {
