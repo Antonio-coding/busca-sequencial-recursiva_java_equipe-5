@@ -1,92 +1,96 @@
-import java.io.File;
-import java.io.FileNotFoundException;
+// Equipe 5 - 7 PARTICIPANTES
+    // Antônio Thiago
+    // Breno Fernandes
+    // Caio Roberto
+    // Jefferson Marques
+    // Jorge Klysiman
+    // Mirla Vieira
+    // Rodrigo Miranda
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
-public class buscaSequencialRecursiva {
+public class BuscaSequencialRecursiva {
 
-    public static class Funcionario {
-        public String matricula;
-        public String nome;
-        public double salario;
+    // Definição da classe Funcionario
+    static class Funcionario {
+        int matricula;
+        String cargo; // Alterado para String
+        String nome;
+        double salario;
 
-        public Funcionario(String matricula, String nome, double salario) {
+        public Funcionario(int matricula, String cargo, String nome, double salario) {
             this.matricula = matricula;
+            this.cargo = cargo;
             this.nome = nome;
             this.salario = salario;
         }
     }
 
-    public static class SistemaCadastro {
+    // Método de busca sequencial recursiva por matrícula
+    public static Funcionario buscarPorMatricula(
+            List<Funcionario> funcionarios,
+            int matricula,
+            int index
+    ) {
+        // Caso base: funcionário não encontrado
+        if (index >= funcionarios.size()) {
+            return null;
+        }
 
-        private static List<Funcionario> funcionarios = new ArrayList<>();
+        // Verifica se a matrícula do funcionário atual é a procurada
+        if (funcionarios.get(index).matricula == matricula) {
+            return funcionarios.get(index);
+        }
 
-        public static void carregarDados(String caminhoArquivo) {
-            try {
-                File arquivo = new File(caminhoArquivo);
-                Scanner scanner = new Scanner(arquivo);
+        // Chamada recursiva para o próximo funcionário na lista
+        return buscarPorMatricula(funcionarios, matricula, index + 1);
+    }
 
-                while (scanner.hasNextLine()) {
-                    String linha = scanner.nextLine();
-                    String[] partes = linha.split(" ");
+    public static void main(String[] args) {
+        // Lista para armazenar os funcionários
+        List<Funcionario> funcionarios = new ArrayList<>();
 
-                    double salario = Double.parseDouble(partes[partes.length - 1]);
+        // Leitura dos dados do arquivo
+        try (BufferedReader br = new BufferedReader(new FileReader("busca-sequecial-recursiva/dados_funcionarios.txt"))) {
+            String linha;
+            while ((linha = br.readLine()) != null) {
+                // Separar os dados da linha com espaços múltiplos ou tabulações
+                String[] dados = linha.split("\\s+");
 
-                    StringBuilder nomeBuilder = new StringBuilder();
-                    for (int i = 2; i < partes.length - 1; i++) {
-                        nomeBuilder.append(partes[i]);
-                        if (i < partes.length - 2) {
-                            nomeBuilder.append("-");
-                        }
-                    }
+                // Certifique-se de que existam pelo menos 4 elementos antes de acessar o índice 3
+                if (dados.length >= 4) {
+                    int matricula = Integer.parseInt(dados[0]);
+                    String cargo = dados[1]; // Alterado para String
+                    String nome = dados[2].replace("-", " "); // Remover hífens do nome
+                    double salario = Double.parseDouble(dados[3]);
 
-                    Funcionario funcionario = new Funcionario(
-                            partes[0],
-                            nomeBuilder.toString(),
-                            salario
-                    );
+                    // Criar objeto Funcionario e adicionar à lista
+                    Funcionario funcionario = new Funcionario(matricula, cargo, nome, salario);
                     funcionarios.add(funcionario);
+                } else {
+                    System.err.println("Formato inválido na linha: " + linha);
                 }
-
-                scanner.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        public static Funcionario buscarPorMatricula(String matricula) {
-            return buscarPorMatricula(matricula, 0);
+        // Exemplo de uso da busca sequencial recursiva
+        int matriculaBuscada = 280; // Alterado para um número inteiro
+        Funcionario funcionarioEncontrado = buscarPorMatricula(funcionarios, matriculaBuscada, 0);
+
+        if (funcionarioEncontrado != null) {
+            System.out.println("Funcionário encontrado: " + funcionarioEncontrado.matricula + " Matricula");
+            System.out.println("Cargo: " + funcionarioEncontrado.cargo+" Numero do cargo");
+            System.out.println("Nome: " + funcionarioEncontrado.nome);
+            System.out.println("Salário: " + funcionarioEncontrado.salario + " R$");
+        } else {
+            System.out.println("Funcionário não encontrado.");
         }
-
-        private static Funcionario buscarPorMatricula(String matricula, int indice) {
-            if (indice >= funcionarios.size()) {
-                return null; // Funcionário não encontrado
-            }
-
-            Funcionario funcionarioAtual = funcionarios.get(indice);
-
-            if (funcionarioAtual.matricula.equals(matricula)) {
-                return funcionarioAtual; // Funcionário encontrado
-            } else {
-                return buscarPorMatricula(matricula, indice + 1);
-            }
-        }
-
-        public static void main(String[] args) {
-            carregarDados("busca-sequecial-recursiva/dados_funcionarios.txt");
-
-            String matriculaBuscada = "89";
-            Funcionario funcionarioEncontrado = buscarPorMatricula(matriculaBuscada);
-
-            if (funcionarioEncontrado != null) {
-                System.out.println("Funcionário encontrado: " + funcionarioEncontrado.nome);
-                System.out.println("Funcionário encontrado: " + funcionarioEncontrado.matricula);
-                
-               
-            } else {
-                System.out.println("Funcionário não encontrado.");
-            }
-        }
+        
     }
 }
